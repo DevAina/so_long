@@ -1,15 +1,18 @@
-#include "minilibx-linux/mlx.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <X11/keysym.h>
+#include "so_long.h"
+#include "stdio.h"
 
-typedef struct s_mlx
+void	free_split(char **split)
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
-	void	*img;
-	void	*img_background;
-}	t_mlx;
+	int	i;
+
+	i = 0;
+	while (split[i] != NULL)
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
 
 int	handle_key(int keysym, t_mlx *mlx)
 {
@@ -26,6 +29,7 @@ int	handle_key(int keysym, t_mlx *mlx)
 		mlx_destroy_image(mlx->mlx_ptr, mlx->img_background);
 		mlx_destroy_display(mlx->mlx_ptr);
 		free(mlx->mlx_ptr);
+		free_split(mlx->map);
 		//free(mlx->img);
 		exit(0);
 	}
@@ -40,7 +44,7 @@ int	handle_key(int keysym, t_mlx *mlx)
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_background, back, y);
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, x, y);
 	}
-	else if (keysym == XK_q && x > 0 && x - 64 >= 0)
+	else if (keysym == XK_a && x > 0 && x - 64 >= 0)
 	{
 		back = x;
 		x -= 64;
@@ -54,7 +58,7 @@ int	handle_key(int keysym, t_mlx *mlx)
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img_background, x, back_y);
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->img, x, y);
 	}
-	else if (keysym == XK_z && y > 0)
+	else if (keysym == XK_w && y > 0)
 	{
 		back_y = y;
 		y -= 64;
@@ -72,7 +76,11 @@ int	main()
 	int	height;
 	int	width_1;
 	int	height_1;
+	char	**map;
 
+	mlx.map = get_map("test.ber");
+	if (check_rectangular_map(mlx.map))
+		printf("map: ok\n");
 	mlx.mlx_ptr = mlx_init();
 	if (mlx.mlx_ptr == NULL)
 		return (1);
