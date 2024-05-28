@@ -47,6 +47,7 @@ int		check_rectangular_map(char **map);
 int		check_nb_character(char **map);
 int		check_character(char **map);
 int		check_map_surronded_by_walls(char **map);
-void	is_path_valid(char **map);
+int	is_path_valid(char *path_map);
+void	free_split(char **split);
 
 #endif

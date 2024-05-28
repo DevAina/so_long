@@ -12,15 +12,15 @@
 
 #include "so_long.h"
 
-t_coord *get_coord(char **map, char character_icon)
+t_coord get_coord(char **map, char character_icon)
 {
-	t_coord *coord;
+	t_coord coord;
 	int	y;
 	int	x;
 
 	y = 0;
-	coord->x = -1;
-	coord->y = -1;
+	coord.x = -1;
+	coord.y = -1;
 	while (map[y] != NULL)
 	{
 		x = 0;
@@ -28,11 +28,11 @@ t_coord *get_coord(char **map, char character_icon)
 		{
 			if (map[y][x] == character_icon)
 			{
-				coord->x = x;
-				coord->y = y;
+				coord.x = x;
+				coord.y = y;
 				return (coord);
 			}
-			y++;
+			x++;
 		}
 		y++;
 	}
@@ -184,10 +184,76 @@ int	check_map_surronded_by_walls(char **map)
 	return (0);
 }
 
-void	is_path_valid(char **map)
+void	fill_zone(int x, int y, t_coord size, char **tab)
 {
-	t_coord *player;
+	if (x < 0 || x >= size.x || y < 0 || y >= size.y)
+		return ;
+	if (tab[y][x] == '0' || tab[y][x] == 'C' || tab[y][x] == 'E' || tab[y][x] == 'P')
+	{
+	tab[y][x] = 'F';
+	fill_zone(x + 1, y, size, tab);
+	fill_zone(x - 1, y, size, tab);
+	fill_zone(x, y + 1, size, tab);
+	fill_zone(x, y - 1, size, tab);
+	}
+}
 
-	player = get_coord(map, 'P');
-	ft_printf("coord player:\nx: %d    y:%d\n", player->x, player->y);
+void	flood_fill(char **tab, t_coord size, t_coord begin)
+{
+    char fill_char;
+
+	fill_char = tab[begin.y][begin.x];
+	if (fill_char == 'F')
+		return ;
+	fill_zone(begin.x, begin.y, size, tab);
+}
+
+int check_path_valid(char **map)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (map[i] != NULL)
+	{
+		j = 0;
+		while (map[i][j] != '\0')
+		{
+			if (map[i][j] != '1' && map[i][j] != '0' && map[i][j] != 'F')
+			{
+				ft_printf("Other character %c\n", map[i][j]);
+				return (0);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
+int	is_path_valid(char *path_map)
+{
+	char    **tmp;
+	t_coord player;
+	t_coord size;
+
+	tmp = get_map(path_map);
+	size.x = ft_strlen(tmp[0]);
+	size.y = get_width(tmp);
+	player = get_coord(tmp, 'P');
+	flood_fill(tmp, size, player);
+	int i = 0;
+	while (tmp[i] != NULL)
+	{
+		ft_printf("%s\n", tmp[i]);
+		i++;
+	}
+	if (check_path_valid(tmp))
+	{
+		free_split(tmp);
+		return (1);
+	}
+	free_split(tmp);
+	ft_printf(RED_COLOR "There is not path valid\n" RESET_COLOR);
+	return (0);
 }

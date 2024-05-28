@@ -86,9 +86,9 @@ int	main()
 	mlx.map = get_map("test.ber");
 	if (check_rectangular_map(mlx.map) && check_nb_character(mlx.map)
 				&& check_character(mlx.map)
-				&& check_map_surronded_by_walls(mlx.map))
+				&& check_map_surronded_by_walls(mlx.map)
+				&& is_path_valid("test.ber"))
 		ft_printf("map: ok\n");
-	is_path_valid(mlx.map);
 	mlx.mlx_ptr = mlx_init();
 	if (mlx.mlx_ptr == NULL)
 		return (1);
