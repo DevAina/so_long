@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 10:33:02 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/28 15:37:09 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/05/29 10:56:34 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,15 @@ typedef struct s_mlx
 #include <stdio.h>
 
 char	**get_map(char *path_map);
+t_coord	get_coord(char **map, char character_icon);
+int		get_width(char **map);
+void	fill_zone(int x, int y, t_coord size, char **tab);
+void	flood_fill(char **tab, t_coord size, t_coord begin);
+int		check_path_valid(char **map);
+int		check_all_lenght_is_same(char **map);
+void	count_characters(char **map, int count_character[]);
+int		cols_is_wall(char **map, int index);
+int		line_is_wall(char **map, int index);
 int		check_rectangular_map(char **map);
 int		check_nb_character(char **map);
 int		check_character(char **map);
