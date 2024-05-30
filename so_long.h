@@ -6,20 +6,20 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 10:33:02 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/29 10:56:34 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/05/30 14:57:53 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-/*typedef struct s_img
-{
-	void	*img;
-	void	*img_back_ground;
-}	t_img;*/
 # define RESET_COLOR "\033[0m"
 # define RED_COLOR "\033[31m"
+
+typedef struct s_img
+{
+	void	*img;
+}	t_img;
 
 typedef struct s_coord
 {
@@ -40,8 +40,9 @@ typedef struct s_mlx
 # include "get_next_line.h"
 # include "minilibx-linux/mlx.h"
 # include <X11/keysym.h>
-#include <stdio.h>
+# include <X11/X.h>
 
+void	render_map(char **map, t_mlx *mlx);
 char	**get_map(char *path_map);
 t_coord	get_coord(char **map, char character_icon);
 int		get_width(char **map);
@@ -56,7 +57,8 @@ int		check_rectangular_map(char **map);
 int		check_nb_character(char **map);
 int		check_character(char **map);
 int		check_map_surronded_by_walls(char **map);
-int	is_path_valid(char *path_map);
+int		is_path_valid(char **map, char *path_map);
+int		check_map(char **map, char *path_map);
 void	free_split(char **split);
 
 #endif

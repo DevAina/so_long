@@ -23,7 +23,7 @@ int	handle_key(int keysym, t_mlx *mlx)
 	
 	if (keysym == XK_Escape)
 	{
-		printf("state escape: ON\n");
+		ft_printf("state escape: ON\n");
 		mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
 		mlx_destroy_image(mlx->mlx_ptr, mlx->img);
 		mlx_destroy_image(mlx->mlx_ptr, mlx->img_background);
@@ -84,26 +84,23 @@ int	main()
 	int	height_1;
 
 	mlx.map = get_map("test.ber");
-	if (check_rectangular_map(mlx.map) && check_nb_character(mlx.map)
-				&& check_character(mlx.map)
-				&& check_map_surronded_by_walls(mlx.map)
-				&& is_path_valid("test.ber"))
-		ft_printf("map: ok\n");
+	check_map(mlx.map, "test.ber");
 	mlx.mlx_ptr = mlx_init();
 	if (mlx.mlx_ptr == NULL)
 		return (1);
-	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, 512, 512, "test");
+
+	mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, ft_strlen(mlx.map[0]) * 64, get_width(mlx.map) * 64, "test");
 	if (mlx.win_ptr == NULL)
 	{
 		mlx_destroy_display(mlx.mlx_ptr);
 		free(mlx.mlx_ptr);
 		return (1);
 	}
-	mlx.img = mlx_xpm_file_to_image(mlx.mlx_ptr, "vaisseau.xpm", &width, &height);
-	printf("width: %d   heaight: %d\n", width, height);
+	mlx.img = mlx_xpm_file_to_image(mlx.mlx_ptr, "wall.xpm", &width, &height);
 	mlx.img_background = mlx_xpm_file_to_image(mlx.mlx_ptr, "background.xpm", &width_1, &height_1);
-	mlx_put_image_to_window(mlx.mlx_ptr, mlx.win_ptr, mlx.img, 0, 0);
-	mlx_key_hook(mlx.win_ptr, &handle_key, &mlx);
+	//mlx_put_image_to_window(mlx.mlx_ptr, mlx.win_ptr, mlx.img, 0, 0);
+	render_map(mlx.map, &mlx);
+	mlx_hook(mlx.win_ptr, KeyPress, KeyPressMask, &handle_key, &mlx);
 	mlx_loop(mlx.mlx_ptr);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 09:54:48 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/29 10:59:21 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:32:32 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ int	check_rectangular_map(char **map)
 	lenght = ft_strlen(map[0]);
 	if (width != lenght && check_all_lenght_is_same(map))
 		return (1);
-	ft_printf(RED_COLOR "The map is not rectangular.\n" RESET_COLOR);
+	free_split(map);
+	ft_printf(RED_COLOR "Error\nThe map is not rectangular.\n" RESET_COLOR);
+	exit(1);
 	return (0);
 }
 
@@ -40,8 +42,10 @@ int	check_nb_character(char **map)
 	if (count_character[0] == 1 && count_character[1] >= 1
 		&& count_character[2] == 1)
 		return (1);
-	ft_printf(RED_COLOR "The map contains either multiple exits, no items,"
-		"or multiple starting positions.\n"RESET_COLOR);
+	free_split(map);
+	ft_printf(RED_COLOR "Error\nThe map contains either multiple "
+			"exits, no items or multiple starting positions.\n" RESET_COLOR);
+	exit(1);
 	return (0);
 }
 
@@ -59,8 +63,10 @@ int	check_character(char **map)
 			if (map[i][j] != '1' && map[i][j] != '0' && map[i][j] != 'P'
 					&& map[i][j] != 'C' && map[i][j] != 'E')
 			{
-				ft_printf(RED_COLOR "The map contains characters other than:"
+				free_split(map);
+				ft_printf(RED_COLOR "Error\nThe map contains characters other than:"
 					" '1', '0', 'P', 'C', 'E'\n" RESET_COLOR);
+				exit(1);
 				return (0);
 			}
 			j++;
@@ -79,11 +85,13 @@ int	check_map_surronded_by_walls(char **map)
 		&& line_is_wall(map, 0)
 		&& line_is_wall(map, width - 1))
 		return (1);
-	ft_printf(RED_COLOR "The map is not surronded by walls\n" RESET_COLOR);
+	free_split(map);
+	ft_printf(RED_COLOR "Error\nThe map is not surronded by walls\n" RESET_COLOR);
+	exit(1);
 	return (0);
 }
 
-int	is_path_valid(char *path_map)
+int	is_path_valid(char **map, char *path_map)
 {
 	char	**tmp;
 	t_coord	player;
@@ -100,6 +108,8 @@ int	is_path_valid(char *path_map)
 		return (1);
 	}
 	free_split(tmp);
-	ft_printf(RED_COLOR "There is not path valid\n" RESET_COLOR);
+	free_split(map);
+	ft_printf(RED_COLOR "Error\nThere is not path valid\n" RESET_COLOR);
+	exit(1);
 	return (0);
 }

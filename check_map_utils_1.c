@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:03:46 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/29 10:53:51 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/05/30 11:43:13 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,14 @@ int	line_is_wall(char **map, int index)
 		j++;
 	}
 	return (1);
+}
+
+int	check_map(char **map, char *path_map)
+{
+	if (check_rectangular_map(map) && check_nb_character(map)
+				&& check_character(map)
+				&& check_map_surronded_by_walls(map)
+				&& is_path_valid(map, path_map))	
+		return (1);
+	return (0);
 }
