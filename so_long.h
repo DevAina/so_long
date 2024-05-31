@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 10:33:02 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/30 14:57:53 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/05/31 15:45:18 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,19 @@
 
 # define RESET_COLOR "\033[0m"
 # define RED_COLOR "\033[31m"
+# define BLUE "\033[34m"
 
 typedef struct s_img
 {
-	void	*img;
+	void	*player_front;
+	void	*player_back;
+	void	*player_right;
+	void	*player_left;
+	void	*tile;
+	void	*door_open;
+	void	*door_close;
+	void	*wall;
+	void	*collectibale;
 }	t_img;
 
 typedef struct s_coord
@@ -27,13 +36,21 @@ typedef struct s_coord
 	int	y;
 }	t_coord;
 
+typedef struct	s_map
+{
+	char	**map;
+	int		nb_collectibale;
+	int		width;
+	int		length;
+}	t_map;
+
 typedef struct s_mlx
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
-	void	*img;
-	void	*img_background;
-	char	**map;	
+	int		move;
+	t_img	img;
+	t_map	map;
 }	t_mlx;
 
 # include "./ft_printf/includes/ft_printf.h"
@@ -42,7 +59,7 @@ typedef struct s_mlx
 # include <X11/keysym.h>
 # include <X11/X.h>
 
-void	render_map(char **map, t_mlx *mlx);
+void	render_map(char **map, t_mlx *mlx, void	*img_player);
 char	**get_map(char *path_map);
 t_coord	get_coord(char **map, char character_icon);
 int		get_width(char **map);
@@ -60,5 +77,9 @@ int		check_map_surronded_by_walls(char **map);
 int		is_path_valid(char **map, char *path_map);
 int		check_map(char **map, char *path_map);
 void	free_split(char **split);
+void	move_right(t_mlx *mlx);
+void	move_left(t_mlx *mlx);
+void    move_up(t_mlx *mlx);
+void    move_down(t_mlx *mlx);
 
 #endif
