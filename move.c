@@ -6,98 +6,142 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:20:40 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/31 16:07:09 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/06/02 17:46:44 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-void	check_nb_collectibale(t_mlx *mlx, void *player)
+void	check_nb_collectibale(t_game *game, void *player)
 {
 	t_coord coord;
 
-	coord = get_coord(mlx->map.map, 'E');
-	ft_printf("Collectible: %d\n", mlx->map.nb_collectibale);
-	if (mlx->map.nb_collectibale == 0)
+	coord = get_coord(game->map.map, 'E');
+	if (coord.y < 0 && coord.x < 0)
+		return ;
+	if (game->map.nb_collectibale == 0)
 	{
-		mlx->map.map[coord.y][coord.x] = 'O';
-	   render_map(mlx->map.map, mlx, player);	
-	}
-	
-}
-
-void	move_right(t_mlx *mlx)
-{
-	t_coord	coord;
-	t_coord	coord_c;
-
-	coord_c = get_coord(mlx->map.map, 'C');
-	coord = get_coord(mlx->map.map, 'P');
-	if (mlx->map.map[coord.y][coord.x + 1] != '1')
-	{
-		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, mlx->move += 1);
-		mlx->map.map[coord.y][coord.x + 1] = 'P';
-		mlx->map.map[coord.y][coord.x] = '0';
-		if (coord_c.x == coord.x && coord_c.y == coord.y)
-			mlx->map.nb_collectibale -= 1;
-		check_nb_collectibale(mlx, mlx->img.player_right);
-		render_map(mlx->map.map, mlx, mlx->img.player_right);
+		game->map.map[coord.y][coord.x] = 'O';
+	   render_map(game->map.map, game, player);	
 	}
 }
 
-void	move_left(t_mlx *mlx)
+void	ft_free(t_game *game)
+{
+	destroy_image(game);
+	mlx_destroy_display(game->mlx_ptr);
+	free(game->mlx_ptr);
+	free_split(game->map.map);
+}
+
+void	is_win(t_coord coord, t_game *game, char symbol)
+{
+	t_coord	pos_player_current;
+
+	if (symbol != 'O')
+		return ;
+	pos_player_current = get_coord(game->map.map, 'P');
+	if (coord.x == pos_player_current.x
+			&& coord.y == pos_player_current.y)
+	{
+		ft_free(game);
+		ft_printf("🎉🎉 YOU WON 🎊🎊\n");
+		exit(0);
+	}
+}
+
+void	move_right(t_game *game)
 {
 	t_coord	coord;
-	t_coord	coord_c;
+	char	prev;
 
-	coord_c = get_coord(mlx->map.map, 'C');
-	coord = get_coord(mlx->map.map, 'P');
-	if (mlx->map.map[coord.y][coord.x - 1] != '1')
+	coord = get_coord(game->map.map, 'P');
+	if (game->map.map[coord.y][coord.x + 1] != '1')
 	{
-		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, mlx->move += 1);
-		mlx->map.map[coord.y][coord.x - 1] = 'P';
-		mlx->map.map[coord.y][coord.x] = '0';
-		if (coord_c.x == coord.x && coord_c.y == coord.y)
-			mlx->map.nb_collectibale -= 1;
-		check_nb_collectibale(mlx, mlx->img.player_left);
-		render_map(mlx->map.map, mlx, mlx->img.player_left);
+		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, game->move += 1);
+		prev = game->map.map[coord.y][coord.x + 1];
+		game->map.map[coord.y][coord.x + 1] = 'P';
+		if (game->map.exit.x == coord.x && game->map.exit.y == coord.y)
+			game->map.map[coord.y][coord.x] = 'E';
+		else
+			game->map.map[coord.y][coord.x] = '0';
+		if (prev == 'C')
+			game->map.nb_collectibale -= 1;
+		render_map(game->map.map, game, game->img.player_right);
+		check_nb_collectibale(game, game->img.player_right);
+		coord.x += 1;
+		is_win(coord, game, prev);
+	}
+}
+
+void	move_left(t_game *game)
+{
+	t_coord	coord;
+	char	prev;
+
+	coord = get_coord(game->map.map, 'P');
+	if (game->map.map[coord.y][coord.x - 1] != '1')
+	{
+		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, game->move += 1);
+		prev = game->map.map[coord.y][coord.x - 1];
+		game->map.map[coord.y][coord.x - 1] = 'P';
+		if (coord.x == game->map.exit.x && coord.y == game->map.exit.y)
+			game->map.map[coord.y][coord.x] = 'E';
+		else
+			game->map.map[coord.y][coord.x] = '0';
+		if (prev == 'C')
+			game->map.nb_collectibale -= 1;
+		render_map(game->map.map, game, game->img.player_left);
+		check_nb_collectibale(game, game->img.player_right);
+		coord.x -= 1;
+		is_win(coord, game, prev);
 	}	
 }
 
-void	move_up(t_mlx *mlx)
+void	move_up(t_game *game)
 {
 	t_coord	coord;
-	t_coord	coord_c;
+	char	prev;
 
-	coord_c = get_coord(mlx->map.map, 'C');
-	coord = get_coord(mlx->map.map, 'P');
-	if (mlx->map.map[coord.y - 1][coord.x] != '1')
+	coord = get_coord(game->map.map, 'P');
+	if (game->map.map[coord.y - 1][coord.x] != '1')
 	{
-		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, mlx->move += 1);
-		mlx->map.map[coord.y - 1][coord.x] = 'P';
-		mlx->map.map[coord.y][coord.x] = '0';
-		if (coord_c.x == coord.x && coord_c.y == coord.y)
-			mlx->map.nb_collectibale -= 1;
-		check_nb_collectibale(mlx, mlx->img.player_back);
-		render_map(mlx->map.map, mlx, mlx->img.player_back);
+		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, game->move += 1);
+		prev = game->map.map[coord.y - 1][coord.x];
+		game->map.map[coord.y - 1][coord.x] = 'P';
+		if (game->map.exit.x == coord.x && game->map.exit.y == coord.y)
+			game->map.map[coord.y][coord.x] = 'E';
+		else
+			game->map.map[coord.y][coord.x] = '0';
+		if (prev == 'C')
+			game->map.nb_collectibale -= 1;
+		render_map(game->map.map, game, game->img.player_back);
+		check_nb_collectibale(game, game->img.player_right);
+		coord.y -= 1;
+		is_win(coord, game, prev);
 	}
 }
 
-void	move_down(t_mlx *mlx)
+void	move_down(t_game *game)
 {
 	t_coord	coord;
-	t_coord	coord_c;
+	char	prev;
 
-	coord_c = get_coord(mlx->map.map, 'C');
-	coord = get_coord(mlx->map.map, 'P');
-	if (mlx->map.map[coord.y + 1][coord.x] != '1')
+	coord = get_coord(game->map.map, 'P');
+	if (game->map.map[coord.y + 1][coord.x] != '1')
 	{
-		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, mlx->move += 1);
-		mlx->map.map[coord.y + 1][coord.x ] = 'P';
-		mlx->map.map[coord.y][coord.x] = '0';
-		if (coord_c.x == coord.x && coord_c.y == coord.y)
-			mlx->map.nb_collectibale -= 1;
-		check_nb_collectibale(mlx, mlx->img.player_front);
-		render_map(mlx->map.map, mlx, mlx->img.player_front);
+		ft_printf(BLUE "Total movement count: %d\n" RESET_COLOR, game->move += 1);
+		prev = game->map.map[coord.y + 1][coord.x];
+		game->map.map[coord.y + 1][coord.x ] = 'P';
+		if (game->map.exit.x == coord.x && game->map.exit.y == coord.y)
+			game->map.map[coord.y][coord.x] = 'E';
+		else
+			game->map.map[coord.y][coord.x] = '0';
+		if (prev == 'C')
+			game->map.nb_collectibale -= 1;
+		render_map(game->map.map, game, game->img.player_front);
+		check_nb_collectibale(game, game->img.player_right);
+		coord.y += 1;
+		is_win(coord, game, prev);
 	}
 }

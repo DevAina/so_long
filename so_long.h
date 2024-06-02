@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 10:33:02 by trarijam          #+#    #+#             */
-/*   Updated: 2024/05/31 15:45:18 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/06/02 18:10:11 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,17 @@ typedef struct	s_map
 	int		nb_collectibale;
 	int		width;
 	int		length;
+	t_coord		exit;
 }	t_map;
 
-typedef struct s_mlx
+typedef struct s_game
 {
 	void	*mlx_ptr;
 	void	*win_ptr;
 	int		move;
 	t_img	img;
 	t_map	map;
-}	t_mlx;
+}	t_game;
 
 # include "./ft_printf/includes/ft_printf.h"
 # include "get_next_line.h"
@@ -59,7 +60,8 @@ typedef struct s_mlx
 # include <X11/keysym.h>
 # include <X11/X.h>
 
-void	render_map(char **map, t_mlx *mlx, void	*img_player);
+void	render_map(char **map, t_game *game, void	*img_player);
+void	ft_free(t_game *game);
 char	**get_map(char *path_map);
 t_coord	get_coord(char **map, char character_icon);
 int		get_width(char **map);
@@ -77,9 +79,11 @@ int		check_map_surronded_by_walls(char **map);
 int		is_path_valid(char **map, char *path_map);
 int		check_map(char **map, char *path_map);
 void	free_split(char **split);
-void	move_right(t_mlx *mlx);
-void	move_left(t_mlx *mlx);
-void    move_up(t_mlx *mlx);
-void    move_down(t_mlx *mlx);
+void	move_right(t_game *game);
+void	move_left(t_game *game);
+void    move_up(t_game *game);
+void	destroy_image(t_game *game);
+void    move_down(t_game *game);
+t_game	init_game(char *path_map);
 
 #endif
