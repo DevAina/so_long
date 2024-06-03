@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 10:33:02 by trarijam          #+#    #+#             */
-/*   Updated: 2024/06/02 18:10:11 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:43:09 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 typedef struct s_img
 {
+	int		size;
 	void	*player_front;
 	void	*player_back;
 	void	*player_right;

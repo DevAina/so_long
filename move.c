@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 14:20:40 by trarijam          #+#    #+#             */
-/*   Updated: 2024/06/02 17:46:44 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:18:43 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	check_nb_collectibale(t_game *game, void *player)
 void	ft_free(t_game *game)
 {
 	destroy_image(game);
+	mlx_destroy_window(game->mlx_ptr, game->win_ptr);
 	mlx_destroy_display(game->mlx_ptr);
 	free(game->mlx_ptr);
 	free_split(game->map.map);

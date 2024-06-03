@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/03 09:36:17 by trarijam          #+#    #+#             */
+/*   Updated: 2024/06/03 14:16:34 by trarijam         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 void	free_split(char **split)
@@ -31,6 +43,7 @@ int	handle_key(int keysym, t_game *game)
 	if (keysym == XK_Escape)
 	{
 		destroy_image(game);
+		mlx_destroy_window(game->mlx_ptr, game->win_ptr);
 		mlx_destroy_display(game->mlx_ptr);
 		free(game->mlx_ptr);
 		free_split(game->map.map);
@@ -38,11 +51,11 @@ int	handle_key(int keysym, t_game *game)
 	}
 	if (keysym == XK_d)
 		move_right(game);
-	else if (keysym == XK_q)
+	else if (keysym == XK_a)
 		move_left(game);
 	else if (keysym == XK_s)
 		move_down(game);
-	else if (keysym == XK_z)
+	else if (keysym == XK_w)
 		move_up(game);
 	return (0);
 }
@@ -54,11 +67,25 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-int	main()
+int	check_argument(int argc)
+{
+	if (argc == 2)
+		return (1);
+	return (0);
+}
+
+int	main(int argc, char **argv)
 {
 	t_game game;
 
-	game = init_game("test.ber");
+	if (check_argument(argc) == 0)
+	{
+		ft_printf(RED_COLOR "Error\n"
+				"There is either no argument or several arguments"
+			   " (you must pass only one argument).\n" RESET_COLOR);
+		return (1);
+	}
+	game = init_game(argv[1]);
 	render_map(game.map.map, &game, game.img.player_right);
 	mlx_hook(game.win_ptr, KeyPress, KeyPressMask, &handle_key, &game);
 	mlx_hook(game.win_ptr, 17, 0, close_window, &game);

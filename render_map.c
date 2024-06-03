@@ -6,7 +6,7 @@
 /*   By: trarijam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 14:50:53 by trarijam          #+#    #+#             */
-/*   Updated: 2024/06/02 17:58:49 by trarijam         ###   ########.fr       */
+/*   Updated: 2024/06/03 14:44:30 by trarijam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	render_map(char **map, t_game *game, void *img_player)
 		if (i == 0)
 			y = 0;
 		else
-			y += 64;
+			y += game->img.size;
 		j = 0;
 		while (map[i][j] != '\0')
 		{
@@ -43,7 +43,7 @@ void	render_map(char **map, t_game *game, void *img_player)
 				mlx_put_image_to_window(game->mlx_ptr, game->win_ptr, game->img.door_close, x, y);
 			if (map[i][j] == 'O')
 				mlx_put_image_to_window(game->mlx_ptr, game->win_ptr, game->img.door_open, x, y);
-			x += 64;
+			x += game->img.size;
 			j++;
 		}
 		x = 0;
